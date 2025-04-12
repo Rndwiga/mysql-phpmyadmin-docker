@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    env_file:
+      - .env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    platform: linux/amd64
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      UPLOAD_LIMIT: 2048M #optional
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+volumes:
+  mysql_data:
